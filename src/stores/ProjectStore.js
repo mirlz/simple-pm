@@ -9,7 +9,12 @@ const initialTodoCount = 2;
 
 const ob = observable({
     dataList: observable.map({
-    })
+    }),
+    modalOb: {
+        visible: false,
+        title: 'TodoList',
+        featureId: ''
+    }
 });
 
 const addProject = action((key) => {
@@ -33,9 +38,25 @@ const removeProject = action((key) => {
 const addFeature = action((projectId, key) => {
     ob.dataList.forEach((data, rowKey, map) => {
         if(rowKey === projectId) {
-            data.features.set('feature'+key, FeatureStore.ob);
-            data.features.forEach((feature, i) => {
+            let fCount = 0; 
+            data['features'].set('feature'+key, 
+                FeatureStore.ob
+            );
+            data['features'].forEach((feature, i) => {
+                let todoCount = 0;
+                feature['id'] = 'feature' + fCount;
+                feature['name'] = 'Feature ' + fCount;
                 feature['lastUpdated'] = CommonStore.getCurrentDateTime();
+                for(var a = 0; a < initialTodoCount; a++) {
+                    feature['todoList'].set('todo'+a, 
+                        TodoStore.ob
+                    );
+                }
+                feature['todoList'].forEach((todo, i) => {
+                    todo['name'] = 'Todo ' + todoCount;
+                    todoCount++;
+                })
+                fCount++;
             });
         }
     });
@@ -61,8 +82,8 @@ const setProjectName = action((index, value) => {
 const setFeatureNameInProject = action((projectIndex, featureIndex, value) => {
     ob.dataList.forEach((data, rowKey, map) => {
         if(rowKey === projectIndex) {
+            data['lastUpdated'] = CommonStore.getCurrentDateTime();
             data.features.forEach((feature, i) => {
-                console.log(i)
                 if(i === featureIndex) {
                     feature['name'] = value;
                     feature['lastUpdated'] = CommonStore.getCurrentDateTime();
@@ -70,6 +91,25 @@ const setFeatureNameInProject = action((projectIndex, featureIndex, value) => {
             })
         }
     });
+});
+
+const setTodoCompleted = action((projectIndex, featureIndex, todoId) => {
+    ob.dataList.forEach((data, rowKey, map) => {
+        if(rowKey === projectIndex) {
+            data['lastUpdated'] = CommonStore.getCurrentDateTime();
+            data.features.forEach((feature, i) => {
+                if(i === featureIndex) {
+                    feature['lastUpdated'] = CommonStore.getCurrentDateTime();
+                    feature['todoList'].forEach((todo, t) => {
+                        if(t === todoId) {
+                            console.log(todo)
+                            //todo['completed'] = true
+                        }
+                    })
+                }
+            })
+        }
+    })
 });
 
 var ProjectStore = {
@@ -80,6 +120,7 @@ var ProjectStore = {
     removeFeature,
     setProjectName,
     setFeatureNameInProject,
+    setTodoCompleted,
     ob
 };
 

@@ -32,16 +32,15 @@ const ProjectList = observer((props) => {
         if(ProjectStore.ob.dataList.size > 0) {
             ProjectStore.ob.dataList.forEach((data, rowKey, map) => {
                 cards.push(
-                    <Col className="ant-col" span={6}>
+                    <Col className="ant-col" span={6} key={rowKey}>
                         <div 
                             className="card" 
-                            key={rowKey}
                         >
                         {
                             Object.keys(data).map((content,innerIndex) => {
                                 if(content === 'name') {
                                     return (
-                                        <div className="header">
+                                        <div className="header" key={content+'-'+rowKey}>
                                             <div className='delete'>
                                                 <Icon 
                                                     type="close-circle" 
@@ -52,9 +51,10 @@ const ProjectList = observer((props) => {
                                             </div>
                                             <FormItem>
                                                 {getFieldDecorator(`project`+`[${rowKey}]`, {
-                                                    initialValue: (data[content] && data[content] !== '') ? data[content] : 'Project name ' + dataCount
+                                                    initialValue: data[content]
                                                 })(
                                                     <Input
+                                                        placeholder="Project name"
                                                         onChange={(e)=> {
                                                             handleProjectNameChange(rowKey, e.target.value)
                                                         }}
@@ -66,7 +66,7 @@ const ProjectList = observer((props) => {
                                 }
                                 else if(content === 'features') {
                                     return (
-                                        <Link to={`/p/${rowKey}`}>
+                                        <Link to={`/p/${rowKey}`} key={content+'-'+rowKey}>
                                             <div className="features content">
                                                 <div className="fig">{data[content].size}</div> features
                                             </div>
@@ -75,7 +75,7 @@ const ProjectList = observer((props) => {
                                 }
                                 else if(content === 'lastUpdated') {
                                     return (
-                                        <div className="lastUpdated">
+                                        <div className="lastUpdated" key={content+'-'+rowKey}>
                                             Last Updated: {data[content]}
                                         </div>
                                     )
@@ -93,15 +93,17 @@ const ProjectList = observer((props) => {
 
     return (
         <div className="projectList">
-            {projectItems()}
-            <Col className="ant-col" span={6}>
-                <Button 
-                    className="newCard" type="dashed"
-                    onClick={addProject}
-                >
-                    Add New
-                </Button>
-            </Col>
+            <Form>
+                {projectItems()}
+                <Col className="ant-col" span={6}>
+                    <Button 
+                        className="newCard" type="dashed"
+                        onClick={addProject}
+                    >
+                        Add New
+                    </Button>
+                </Col>
+            </Form>
         </div>
     );
 });

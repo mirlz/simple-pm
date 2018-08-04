@@ -1,26 +1,16 @@
 import { observable, action } from "mobx";
-import CommonStore from './CommonStore';
 import ProjectStore from './ProjectStore';
 
 const ob = ({
+    id: '',
     name: '',
     completed: false,
-    todoList: [],
+    todoList: observable.map({
+    }),
     lastUpdated: '',
 });
-
-const setFeature = action((projectIndex, featureIndex, value) => {
-    ProjectStore.setFeatureNameInProject(projectIndex, featureIndex, value);
-});
-
-const addFeature = action((projectId, key) => {
-    ProjectStore.addFeature(projectId, key);
-});
-
 var FeatureStore = {
-    ob,
-    setFeature,
-    addFeature
+    ob
 };
 
 export default FeatureStore;

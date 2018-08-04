@@ -1,8 +1,9 @@
 import React from 'react';   
 import {observer} from 'mobx-react';
+import { Form } from 'antd';
 import FeatureList from '../../components/FeatureList';
 
-const FeatureListPage = observer((props) => { 
+const FeatureListPage = Form.create()(observer((props) => { 
     let projectId = props.match.params.id;
 
     return (
@@ -10,6 +11,6 @@ const FeatureListPage = observer((props) => {
             <FeatureList projectId={projectId} form={props.form} />
         </div>
     )
-});
+}));
 
 export default FeatureListPage;
