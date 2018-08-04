@@ -56,6 +56,10 @@ body {
   font-weight: bold;
 }
 
+.projectList .ant-col .card .todos, .featureList .ant-col .card .todos {
+  cursor: pointer;
+}
+
 .projectList .ant-col .card .fig, .featureList .ant-col .card .fig {
   font-size: 40px;
 }
