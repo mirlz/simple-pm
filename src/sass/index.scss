@@ -1,0 +1,104 @@
+$borderColor:#c7c7c7;
+$borderFocusColor: #40a9ff;
+$primaryColor: #143642;
+$cardHeight: 278px;
+$fullWidth: 100%;
+@mixin hideDisplay {
+    display: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.clear {
+    clear: both;
+}
+
+.ant-form-item {
+    margin-bottom: 10px !important;
+}
+
+.projectList, .featureList {
+    padding: 20px;
+
+    .ant-col {
+        padding: 10px;
+    }
+
+    .ant-col .card {
+        border: 1px solid $borderColor;
+        border-radius: 5px;
+        padding: 10px;
+        height: $cardHeight;
+        position: relative;
+    }
+
+    .ant-col .card .header {
+        border-bottom: 1px solid $borderColor;
+        margin-bottom: 30px;
+    }
+
+    .ant-col .card .header .delete {
+        position: absolute;
+        top: -17px;
+        font-size: 22px;
+        right: -12px;
+        cursor: pointer;
+    }
+    .ant-col .card .header .delete.hide {
+        @include hideDisplay();
+    }
+
+    .ant-col .card .header input {
+        &:hover, &:focus {
+            border: 1px solid $borderFocusColor;
+        }
+    }
+
+    .ant-col .card .content {
+        font-size: 16px;
+        color: $primaryColor;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .ant-col .card .fig {
+        font-size: 40px;
+    }
+
+    .ant-col .card .lastUpdated {
+        border-top: 1px solid $borderColor;
+        padding-top: 10px;
+        margin-top: 40px;
+    }
+
+    .ant-col .newCard {
+        height: $cardHeight;
+        width: $fullWidth;
+    }
+
+    .ant-col .card .todos .completed {
+        border-left: 1px solid $primaryColor;
+    }
+
+    .ant-col .card .todos .todo {
+        text-align: center;
+    }
+}
+
+.featureListContainer {
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid $borderColor;
+
+    .title {
+        margin: 0 10px 20px 10px;
+        border-bottom: 1px solid $borderColor;
+        padding-bottom: 10px;
+        font-size: 20px;
+        color: $primaryColor;
+    }
+}

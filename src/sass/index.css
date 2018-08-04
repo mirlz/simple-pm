@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.clear {
+  clear: both;
+}
+
+.ant-form-item {
+  margin-bottom: 10px !important;
+}
+
+.projectList, .featureList {
+  padding: 20px;
+}
+
+.projectList .ant-col, .featureList .ant-col {
+  padding: 10px;
+}
+
+.projectList .ant-col .card, .featureList .ant-col .card {
+  border: 1px solid #c7c7c7;
+  border-radius: 5px;
+  padding: 10px;
+  height: 278px;
+  position: relative;
+}
+
+.projectList .ant-col .card .header, .featureList .ant-col .card .header {
+  border-bottom: 1px solid #c7c7c7;
+  margin-bottom: 30px;
+}
+
+.projectList .ant-col .card .header .delete, .featureList .ant-col .card .header .delete {
+  position: absolute;
+  top: -17px;
+  font-size: 22px;
+  right: -12px;
+  cursor: pointer;
+}
+
+.projectList .ant-col .card .header .delete.hide, .featureList .ant-col .card .header .delete.hide {
+  display: none;
+}
+
+.projectList .ant-col .card .header input:hover, .projectList .ant-col .card .header input:focus, .featureList .ant-col .card .header input:hover, .featureList .ant-col .card .header input:focus {
+  border: 1px solid #40a9ff;
+}
+
+.projectList .ant-col .card .content, .featureList .ant-col .card .content {
+  font-size: 16px;
+  color: #143642;
+  text-align: center;
+  font-weight: bold;
+}
+
+.projectList .ant-col .card .fig, .featureList .ant-col .card .fig {
+  font-size: 40px;
+}
+
+.projectList .ant-col .card .lastUpdated, .featureList .ant-col .card .lastUpdated {
+  border-top: 1px solid #c7c7c7;
+  padding-top: 10px;
+  margin-top: 40px;
+}
+
+.projectList .ant-col .newCard, .featureList .ant-col .newCard {
+  height: 278px;
+  width: 100%;
+}
+
+.projectList .ant-col .card .todos .completed, .featureList .ant-col .card .todos .completed {
+  border-left: 1px solid #143642;
+}
+
+.projectList .ant-col .card .todos .todo, .featureList .ant-col .card .todos .todo {
+  text-align: center;
+}
+
+.featureListContainer {
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid #c7c7c7;
+}
+
+.featureListContainer .title {
+  margin: 0 10px 20px 10px;
+  border-bottom: 1px solid #c7c7c7;
+  padding-bottom: 10px;
+  font-size: 20px;
+  color: #143642;
+}
+/*# sourceMappingURL=index.css.map */
