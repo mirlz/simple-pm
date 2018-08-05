@@ -4,6 +4,7 @@ import ProjectStore from '../stores/ProjectStore';
 import FeatureStore from '../stores/FeatureStore';
 import { Col, Input, Form, Row, Icon, Button, Modal, Checkbox } from 'antd';
 import { Link } from 'react-router-dom';
+import TodoList from './TodoList';
 
 const FormItem = Form.Item;
 
@@ -16,28 +17,25 @@ const FeatureList = observer((props) => {
     let uuid = project['features'].size;
 
     const addFeature = () => {
-        FeatureStore.addFeature(projectId, uuid);
+        ProjectStore.addFeature(projectId, uuid);
         uuid++;
     };
     const removeFeature = (k) => {
         ProjectStore.removeFeature(projectId, k);
     }
-    const handleFeatureNameChange = (rowKey, value) => {
+    const handleFeatureNameChange = (rowKey, value, fieldKey) => {
+        form.setFields({
+            [fieldKey]: { 
+              value: value,
+              errors: ""
+            }  
+        });
         ProjectStore.setFeatureNameInProject(projectId, rowKey, value);
+        console.log(form.getFieldsValue())
     };
-    const handleModalOpen = (title, fId) => {
+    const handleModalOpen = (title) => {
         ProjectStore.ob.modalOb.title = title + ' - Todo List';
         ProjectStore.ob.modalOb.visible = true;
-        ProjectStore.ob.modalOb.featureId = fId;
-    }
-    const handleOk = (e) => {
-        ProjectStore.ob.modalOb.visible = false;
-    }
-    const handleCancel = (e) => {
-        ProjectStore.ob.modalOb.visible = false;
-    }
-    const handleClickCheckBox =(projectId, featureId, todoId) => {
-        ProjectStore.setTodoCompleted(projectId, featureId, todoId);
     }
 
     const FeatureItems = () => {
@@ -51,13 +49,12 @@ const FeatureList = observer((props) => {
                         <Col className="ant-col" span={6} key={rowKey}>
                             <div 
                                 className="card" 
-                                key={rowKey}
                             >
                                 {
                                     Object.keys(data).map((content,value) => {
                                         if(content === 'name') {
                                             return (
-                                                <div className="header" key={projectId+content+rowKey}>
+                                                <div className="header" key={projectId+'-feature'+rowKey}>
                                                     <div className='delete'>
                                                         <Icon 
                                                             type="close-circle" 
@@ -67,13 +64,16 @@ const FeatureList = observer((props) => {
                                                         />
                                                     </div>
                                                     <FormItem>
-                                                        {getFieldDecorator(projectId+content+`[${rowKey}]`, {
-                                                            initialValue: data[content]
+                                                        {getFieldDecorator(projectId+'-feature-'+`[${rowKey}]`, {
+                                                            initialValue: data[content],
+                                                            rules: [{
+                                                              whitespace: true, 
+                                                            }]
                                                         })(
                                                             <Input 
                                                                 placeholder="Feature name"
                                                                 onChange={(e)=> {
-                                                                    handleFeatureNameChange(rowKey, e.target.value)
+                                                                    handleFeatureNameChange(rowKey, e.target.value, projectId+'-feature-'+`[${rowKey}]`)
                                                                 }}
                                                             />
                                                         )}
@@ -83,8 +83,8 @@ const FeatureList = observer((props) => {
                                         }
                                         if(content === 'todoList') {
                                             let todoCount = data[content].size;
-                                            Object.keys(data[content]).map((todoList,v) => {
-                                                if(data[content][todoList]['completed']) {
+                                            data[content].forEach((todo, todoKey) => {
+                                                if(todo['completed']) {
                                                     completedTodos++;
                                                 }
                                             });
@@ -94,6 +94,7 @@ const FeatureList = observer((props) => {
                                                     key={projectId+content+rowKey}
                                                     onClick={() => {
                                                         handleModalOpen(data['name'], rowKey);
+                                                        ProjectStore.ob.modalOb.featureId = rowKey;
                                                     }}
                                                 >
                                                     <Row >
@@ -126,64 +127,16 @@ const FeatureList = observer((props) => {
         return cards;
     }
 
-    const TodoItems = () => {
-        let todos = [];
-
-        project['features'].forEach((data, rowKey, map) => {
-            if(rowKey === ProjectStore.ob.modalOb.featureId) {
-                return (
-                    Object.keys(data).map((content,value) => {
-                        if(content === 'todoList') {
-                            return (
-                                data[content].forEach((todo, todoKey) => {
-                                    todos.push( 
-                                        <div className="todoItem" key={projectId+content+todoKey}> 
-                                        {
-                                            Object.keys(todo).map((todoField, key) => {
-                                                console.log(todo['completed'])
-                                                if(todoField === 'name') {
-                                                    return (
-                                                        <div key={projectId+todoKey+todoField}>
-                                                            <Checkbox 
-                                                                checked={ todo['completed'] }
-                                                                onClick={handleClickCheckBox(projectId, rowKey, todoKey)}
-                                                            >
-                                                                { todo[todoField] }
-                                                            </Checkbox>
-                                                        </div>
-                                                    )
-                                                }
-                                            })
-                                        }
-                                        </div>
-                                    )
-                                })
-                            )
-                        }
-                    })
-                )
-            }
-        })
-
-        return todos;
-    }
     return (
         <div className="featureList">
-            <Link to='/'>
-                <Button type="primary">
-                    <Icon type="left" />Back
-                </Button>
-            </Link>
-            <div className="featureListContainer">
-            <   Modal
-                    title={ProjectStore.ob.modalOb.title}
-                    visible={ProjectStore.ob.modalOb.visible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                >
-                    <TodoItems/>
-                </Modal>
-                <Form>
+            <Form>
+                <TodoList projectId={projectId} form={form}/>
+                <Link to='/'>
+                    <Button type="primary">
+                        <Icon type="left" />Back
+                    </Button>
+                </Link>
+                <div className="featureListContainer">
                     {
                         (project['name']) ? <div className="title">{project['name']}</div> : ''
                     }
@@ -197,8 +150,9 @@ const FeatureList = observer((props) => {
                         </Button>
                     </Col>
                     <div className="clear"></div>
-                </Form>
-            </div>
+                    
+                </div>
+            </Form>
         </div>
     )
 });

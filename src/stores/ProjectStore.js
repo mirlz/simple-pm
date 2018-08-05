@@ -70,6 +70,28 @@ const removeFeature = action((projectId, key) => {
     });
 });
 
+const addTodo = action((projectId, featureId, todoKey) => {
+    let project = ob.dataList.get(projectId);
+    let feature = project['features'].get(featureId);
+    feature['todoList'].set('todo'+todoKey, 
+        TodoStore.ob
+    );
+    let todo = feature['todoList'].get('todo'+todoKey);
+    todo.name = 'Todo ' + todoKey;
+
+    project['lastUpdated'] = CommonStore.getCurrentDateTime();
+    feature['lastUpdate'] = CommonStore.getCurrentDateTime();
+});
+
+const removeTodo = action((projectId, featureId, todoKey) => {
+    let project = ob.dataList.get(projectId);
+    let feature = project['features'].get(featureId);
+    feature['todoList'].delete(todoKey);
+
+    project['lastUpdated'] = CommonStore.getCurrentDateTime();
+    feature['lastUpdate'] = CommonStore.getCurrentDateTime();
+});
+
 const setProjectName = action((index, value) => {
     ob.dataList.forEach((data, rowKey, map) => {
         if(rowKey === index) {
@@ -80,36 +102,31 @@ const setProjectName = action((index, value) => {
 });
 
 const setFeatureNameInProject = action((projectIndex, featureIndex, value) => {
-    ob.dataList.forEach((data, rowKey, map) => {
-        if(rowKey === projectIndex) {
-            data['lastUpdated'] = CommonStore.getCurrentDateTime();
-            data.features.forEach((feature, i) => {
-                if(i === featureIndex) {
-                    feature['name'] = value;
-                    feature['lastUpdated'] = CommonStore.getCurrentDateTime();
-                }
-            })
-        }
-    });
+    let project = ob.dataList.get(projectIndex);
+    let feature = project['features'].get(featureIndex);
+    project['lastUpdated'] = CommonStore.getCurrentDateTime();
+    feature['name'] = value;
+    feature['lastUpdated'] = CommonStore.getCurrentDateTime();
 });
 
 const setTodoCompleted = action((projectIndex, featureIndex, todoId) => {
-    ob.dataList.forEach((data, rowKey, map) => {
-        if(rowKey === projectIndex) {
-            data['lastUpdated'] = CommonStore.getCurrentDateTime();
-            data.features.forEach((feature, i) => {
-                if(i === featureIndex) {
-                    feature['lastUpdated'] = CommonStore.getCurrentDateTime();
-                    feature['todoList'].forEach((todo, t) => {
-                        if(t === todoId) {
-                            console.log(todo)
-                            //todo['completed'] = true
-                        }
-                    })
-                }
-            })
-        }
-    })
+    let project = ob.dataList.get(projectIndex);
+    let feature = project['features'].get(featureIndex);
+    let todo = feature['todoList'].get(todoId);
+    todo.completed = !todo.completed;
+
+    project['lastUpdated'] = CommonStore.getCurrentDateTime();
+    feature['lastUpdate'] = CommonStore.getCurrentDateTime();
+});
+
+const setTodoName = action((projectIndex, featureIndex, todoId, value) => {
+    let project = ob.dataList.get(projectIndex);
+    let feature = project['features'].get(featureIndex);
+    let todo = feature['todoList'].get(todoId);
+    todo.name = value;
+
+    project['lastUpdated'] = CommonStore.getCurrentDateTime();
+    feature['lastUpdate'] = CommonStore.getCurrentDateTime();
 });
 
 var ProjectStore = {
@@ -118,9 +135,12 @@ var ProjectStore = {
     removeProject,
     addFeature,
     removeFeature,
+    addTodo,
+    removeTodo,
     setProjectName,
     setFeatureNameInProject,
     setTodoCompleted,
+    setTodoName,
     ob
 };
 

@@ -96,4 +96,41 @@ body {
   font-size: 20px;
   color: #143642;
 }
+
+.todoModal .ant-modal-body .todoItem {
+  margin: 10px 0;
+  position: relative;
+}
+
+.todoModal .ant-modal-body .ant-checkbox-wrapper, .todoModal .ant-modal-body .todoNameField {
+  float: left;
+  margin-left: 10px;
+}
+
+.todoModal .ant-modal-body .todoNameField {
+  width: auto;
+  border: none;
+  height: auto;
+  line-height: initial;
+  border-bottom: 1px solid #c7c7c7;
+  width: 90%;
+}
+
+.todoModal .ant-modal-body .todoNameField:hover, .todoModal .ant-modal-body .todoNameField:focus {
+  border: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  border-bottom: 1px solid #c7c7c7;
+}
+
+.todoModal .ant-modal-body .addNewTodo {
+  margin-top: 10px;
+}
+
+.todoModal .ant-modal-body .delete {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 0px;
+}
 /*# sourceMappingURL=index.css.map */

@@ -106,3 +106,39 @@ body {
         color: $primaryColor;
     }
 }
+
+.todoModal .ant-modal-body {
+    .todoItem {
+        margin: 10px 0;
+        position: relative;
+    }
+    .ant-checkbox-wrapper, .todoNameField {
+        float: left; 
+        margin-left: 10px;
+    }
+    .todoNameField {
+        width: auto;
+        border: none;
+        height: auto;
+        line-height: initial;
+        border-bottom: 1px solid $borderColor;
+        width: 90%;
+
+        &:hover, &:focus {
+            border: none;
+            box-shadow: none;
+            border-bottom: 1px solid $borderColor;
+        }
+    }
+
+    .addNewTodo {
+        margin-top: 10px;
+    }
+
+    .delete {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 0px;
+    }
+}
