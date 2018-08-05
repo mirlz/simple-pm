@@ -1,8 +1,7 @@
 import React from 'react';   
 import {observer} from 'mobx-react';
 import ProjectStore from '../stores/ProjectStore';
-import FeatureStore from '../stores/FeatureStore';
-import { Col, Input, Form, Row, Icon, Button, Modal, Checkbox } from 'antd';
+import { Col, Input, Form, Row, Icon, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import TodoList from './TodoList';
 
@@ -10,7 +9,7 @@ const FormItem = Form.Item;
 
 const FeatureList = observer((props) => { 
     const form = props.form;
-    const { getFieldDecorator, getFieldValue } = form;
+    const { getFieldDecorator } = form;
 
     let projectId = props.projectId;
     let project = ProjectStore.ob.dataList.get(projectId);
@@ -64,7 +63,7 @@ const FeatureList = observer((props) => {
                                                         />
                                                     </div>
                                                     <FormItem>
-                                                        {getFieldDecorator(projectId+'-feature-'+`[${rowKey}]`, {
+                                                        {getFieldDecorator(projectId+`-feature-[${rowKey}]`, {
                                                             initialValue: data[content],
                                                             rules: [{
                                                               whitespace: true, 
@@ -73,7 +72,7 @@ const FeatureList = observer((props) => {
                                                             <Input 
                                                                 placeholder="Feature name"
                                                                 onChange={(e)=> {
-                                                                    handleFeatureNameChange(rowKey, e.target.value, projectId+'-feature-'+`[${rowKey}]`)
+                                                                    handleFeatureNameChange(rowKey, e.target.value, projectId+`-feature-[${rowKey}]`)
                                                                 }}
                                                             />
                                                         )}
@@ -115,6 +114,7 @@ const FeatureList = observer((props) => {
                                                 </div>
                                             )
                                         }
+                                        return true
                                     })
                                 }
                             </div>

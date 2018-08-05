@@ -1,5 +1,4 @@
-import { observable, action } from "mobx";
-import ProjectStore from './ProjectStore';
+import { observable } from "mobx";
 
 const ob = ({
     id: '',

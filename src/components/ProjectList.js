@@ -1,9 +1,9 @@
 import React from 'react';   
-import { observer, renderReporter } from "mobx-react";
+import { observer } from "mobx-react";
 import ProjectStore from '../stores/ProjectStore';
 import { Link } from 'react-router-dom';
 
-import { Card, Col, Input, Form, Button, Icon } from 'antd';
+import { Col, Input, Form, Button, Icon } from 'antd';
 
 const FormItem = Form.Item;
 let uuid = ProjectStore.initialProjectCount;
@@ -14,7 +14,7 @@ for(var i = 0; i < ProjectStore.initialProjectCount; i++) {
 
 const ProjectList = observer((props) => {
     const form = props.form;
-    const { getFieldDecorator, getFieldValue } = form;
+    const { getFieldDecorator } = form;
 
     const addProject = () => {
         ProjectStore.addProject(uuid);
@@ -28,7 +28,6 @@ const ProjectList = observer((props) => {
     };
     const projectItems = () => {
         let cards = [];
-        let dataCount = 0;
         if(ProjectStore.ob.dataList.size > 0) {
             ProjectStore.ob.dataList.forEach((data, rowKey, map) => {
                 cards.push(
@@ -50,7 +49,7 @@ const ProjectList = observer((props) => {
                                                 />
                                             </div>
                                             <FormItem>
-                                                {getFieldDecorator(`project`+`[${rowKey}]`, {
+                                                {getFieldDecorator(`project[${rowKey}]`, {
                                                     initialValue: data[content]
                                                 })(
                                                     <Input
@@ -80,12 +79,12 @@ const ProjectList = observer((props) => {
                                         </div>
                                     )
                                 }
+                                return true
                             })
                         }
                         </div>
                     </Col>
                 )
-                dataCount++;
             })
         }
         return cards;

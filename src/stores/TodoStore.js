@@ -1,5 +1,3 @@
-import { observable, action } from "mobx";
-import CommonStore from './CommonStore';
 
 const ob = ({
     name: '',

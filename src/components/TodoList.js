@@ -5,7 +5,7 @@ import { Modal, Checkbox, Col, Button, Input, Icon } from 'antd';
 
 const TodoList = observer((props) => { 
     const form = props.form;
-    const { getFieldDecorator, getFieldValue } = form;
+    const { getFieldDecorator } = form;
 
     let projectId = props.projectId;
     let project = ProjectStore.ob.dataList.get(projectId);
@@ -52,7 +52,7 @@ const TodoList = observer((props) => {
                                                         console.log(todo['completed'])
                                                         return (
                                                             <div key={projectId+todoKey+todoField}>
-                                                                {getFieldDecorator(projectId+'-'+ProjectStore.ob.modalOb.featureId+'-todoItem-'+`[${todoKey}]`, {
+                                                                {getFieldDecorator(projectId+'-'+ProjectStore.ob.modalOb.featureId+`-todoItem-[${todoKey}]`, {
                                                                 })(
                                                                     <Checkbox 
                                                                         checked={ todo['completed'] }
@@ -61,7 +61,7 @@ const TodoList = observer((props) => {
                                                                         }}
                                                                     />
                                                                 )}
-                                                                {getFieldDecorator(projectId+'-'+ProjectStore.ob.modalOb.featureId+'-todoItemName-'+`[${todoKey}]`, {
+                                                                {getFieldDecorator(projectId+'-'+ProjectStore.ob.modalOb.featureId+`-todoItemName-[${todoKey}]`, {
                                                                     initialValue: todo[todoField]
                                                                 })(
                                                                     <Input 
@@ -83,6 +83,7 @@ const TodoList = observer((props) => {
                                                             </div>
                                                         )
                                                     }
+                                                    return true
                                                 })
                                             }
                                             </div>
@@ -90,6 +91,7 @@ const TodoList = observer((props) => {
                                     })
                                 )
                             }
+                            return true
                         })
                     }
                 })

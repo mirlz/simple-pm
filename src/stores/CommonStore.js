@@ -1,4 +1,3 @@
-import { observable, action } from "mobx";
 
 const getCurrentDateTime = () => {
     let today = new Date();
