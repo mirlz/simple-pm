@@ -5,6 +5,9 @@ I'm trying to do a web app whereby on load, it will show the list of projects in
 
 This project is using the create-react-app boilerplate. 
 
+
+## Below document updated for fixes 3 July 2019
+
 ### Frameworks / libraries used
 
 - React
@@ -16,35 +19,38 @@ This project is using the create-react-app boilerplate.
 ### Observables / Stores
 
 - CommonStore.js
-- FeatureStore.js
 - ProjectStore.js
-- TodoStore.js
 
 As time and date are used across all the pages, I created a separate store to store commonly used components. 
 
-Both FeatureStore and TodoStore contain the data structure. Most logics are done on the ProjectStore.js file. 
-
-There should be an array of objects, each object is a project, and in it, it will store the Festure items in it, with Todos in the FeatureStores.
+ProjectJS file contain the full data structure and logic.
 
 ### Manipulating Projects data
 
-     const addProject = action((key) => {
-    	ob.dataList.set('project'+key, {
-    	    id: key, 
-    	    name: 'Project name ' + key,
-    	    features:  observable.map({
-    	    }),
-    	    lastUpdated: CommonStore.getCurrentDateTime(),
-    	});
-    
-    	for(var i = 0; i < initialFeatureCount; i++) {
-    	 addFeature('project'+key, i);
-    	}
-     });
+    const addProject = action((key) => {
 
-ob.dataList would be used to hold all the data in it. ob.dataList.set() is used to store the key of the object.
+		ob.dataList.set('project'+key, {
+			id: key,
+			name: 'Project name ' + key,
+			features: observable.map({
+			}),
+			lastUpdated: CommonStore.getCurrentDateTime(),
+			featureLastCount: 0
+		});
+		
+		for(var i = 0; i < initialFeatureCount; i++) {
+			addFeature('project'+key, i);
+		}
 
-In the features key, another observable is created so as to store the array of feature objects in it. As the default number of features is 2, so for each project that is created, there will be 2 features assigned to it. 
+	});
+
+ob.dataList would be used to hold all the data in it. All projects are pushed into ob.dataList.
+
+ob.dataList.set() is used to store the key of the project.
+
+featureLastCount is used for taking down the id of the last feature on the project. When features are removed dynamically, it should record the last feature count, so the same id would not be used for new features added.
+
+'project' + key is passed into the addFeature() function to take note of which project's features I'm manipulating. 
 
     const removeProject = action((key) => {
     	  ob.dataList.delete(key);
@@ -54,36 +60,26 @@ Removing an object from the array is done easily by passing in the object key to
 
 ### Manipulating Features data
 
- 
+	const  addFeature  =  action((projectId, key) => {
+		ob.dataList.forEach((data, rowKey, map) => {
+			if(rowKey  ===  projectId) {
+				data['featureLastCount']++;
+				data['features'].set('feature'+key, {
+					id:  key,
+					name:  'Feature '+key,
+					completed:  false,
+					todoList:  observable.map({
+					}),
+					lastUpdated:  CommonStore.getCurrentDateTime(),
+					todoLastCount:  0
+				});
 
-    const addFeature = action((projectId, key) => {
-       ob.dataList.forEach((data, rowKey, map) => {
-           if(rowKey === projectId) {
-               let fCount = 0; 
-               data['features'].set('feature'+key, 
-                   FeatureStore.ob
-               );
-               data['features'].forEach((feature, i) => {
-                   let todoCount = 0;
-                   feature['id'] = 'feature' + fCount;
-                   feature['name'] = 'Feature ' + fCount;
-                   feature['lastUpdated'] = CommonStore.getCurrentDateTime();
-                   
-                   for(var a = 0; a < initialTodoCount; a++) {
-                       feature['todoList'].set('todo'+a, 
-                           TodoStore.ob
-                       );
-                   }
-                   
-                   feature['todoList'].forEach((todo, i) => {
-                       todo['name'] = 'Todo ' + todoCount;
-                       todoCount++;
-                   })
-                   fCount++;
-               });
-           }
-       });
-    });
+				for(var  a  =  0; a  <  initialTodoCount; a++) {
+					addTodo(projectId, 'feature'+key, a)
+				}
+			}
+		});
+	});
 
 The key is passed into the addFeature function so that we can identify which project object we will be injecting the feature into. 
 
@@ -93,18 +89,20 @@ So as we loop through the projects list and get the project with the key, then a
 
 Using the same method as in manipulating features data: 
 
-    const addTodo = action((projectId, featureId, todoKey) => {
-        let project = ob.dataList.get(projectId);
-        let feature = project['features'].get(featureId);
-        feature['todoList'].set('todo'+todoKey, 
-            TodoStore.ob
-        );
-        let todo = feature['todoList'].get('todo'+todoKey);
-        todo.name = 'Todo ' + todoKey;
-  
-        project['lastUpdated'] = CommonStore.getCurrentDateTime();
-        feature['lastUpdate'] = CommonStore.getCurrentDateTime();
-    });
+    const  addTodo  =  action((projectId, featureId, todoKey) => {
+		let  project  =  ob.dataList.get(projectId);
+		let  feature  =  project['features'].get(featureId);
+		feature['todoLastCount']++;
+		feature['todoList'].set('todo'+todoKey, {
+			name:  'Todo '  +  todoKey,
+			completed:  false,
+			lastUpdated:  CommonStore.getCurrentDateTime(),
+		});
+		project['lastUpdated'] =  CommonStore.getCurrentDateTime();
+		feature['lastUpdate'] =  CommonStore.getCurrentDateTime();
+	});
+
+The parameters for todos is getting longer, as I will need to keep track of which project, and which feature I am currently manipulating for the todo. So I'm passing in the projectId, and the featureId. 
 
 ### Setting data that user input
 
