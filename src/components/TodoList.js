@@ -12,7 +12,7 @@ const TodoList = observer((props) => {
     let currentFeatureSelected = project['features'].get(ProjectStore.ob.modalOb.featureId);
     let uuid = 0;
     if(currentFeatureSelected) {
-        uuid = currentFeatureSelected['todoList'].size;
+        uuid = currentFeatureSelected['todoLastCount'];
     }
 
     const handleOk = (e) => {
@@ -49,7 +49,6 @@ const TodoList = observer((props) => {
                                             {
                                                 Object.keys(todo).map((todoField, key) => {
                                                     if(todoField === 'name') {
-                                                        console.log(todo['completed'])
                                                         return (
                                                             <div key={projectId+todoKey+todoField}>
                                                                 {getFieldDecorator(projectId+'-'+ProjectStore.ob.modalOb.featureId+'-todoItem-'+`[${todoKey}]`, {
@@ -106,7 +105,7 @@ const TodoList = observer((props) => {
             onOk={handleOk}
             onCancel={handleCancel}
         >
-            <TodoItems/>
+            {TodoItems()}
             <Col className="ant-col" span={6}>
                 <Button 
                     className="newCard addNewTodo" type="dashed"

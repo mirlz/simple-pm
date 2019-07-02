@@ -1,7 +1,5 @@
 import { observable, action } from "mobx";
 import CommonStore from './CommonStore';
-import FeatureStore from './FeatureStore';
-import TodoStore from './TodoStore';
 
 const initialProjectCount = 3; 
 const initialFeatureCount = 2; 
@@ -24,6 +22,7 @@ const addProject = action((key) => {
         features:  observable.map({
         }),
         lastUpdated: CommonStore.getCurrentDateTime(),
+        featureLastCount: 0
     });
 
     for(var i = 0; i < initialFeatureCount; i++) {
@@ -38,26 +37,20 @@ const removeProject = action((key) => {
 const addFeature = action((projectId, key) => {
     ob.dataList.forEach((data, rowKey, map) => {
         if(rowKey === projectId) {
-            let fCount = 0; 
-            data['features'].set('feature'+key, 
-                FeatureStore.ob
-            );
-            data['features'].forEach((feature, i) => {
-                let todoCount = 0;
-                feature['id'] = 'feature' + fCount;
-                feature['name'] = 'Feature ' + fCount;
-                feature['lastUpdated'] = CommonStore.getCurrentDateTime();
-                for(var a = 0; a < initialTodoCount; a++) {
-                    feature['todoList'].set('todo'+a, 
-                        TodoStore.ob
-                    );
-                }
-                feature['todoList'].forEach((todo, i) => {
-                    todo['name'] = 'Todo ' + todoCount;
-                    todoCount++;
-                })
-                fCount++;
+            data['featureLastCount']++;
+            data['features'].set('feature'+key, {
+                id: key,
+                name: 'Feature '+key,
+                completed: false,
+                todoList: observable.map({
+                }),
+                lastUpdated: CommonStore.getCurrentDateTime(),
+                todoLastCount: 0
             });
+
+            for(var a = 0; a < initialTodoCount; a++) {
+                addTodo(projectId, 'feature'+key, a)
+            }   
         }
     });
 });
@@ -73,12 +66,12 @@ const removeFeature = action((projectId, key) => {
 const addTodo = action((projectId, featureId, todoKey) => {
     let project = ob.dataList.get(projectId);
     let feature = project['features'].get(featureId);
-    feature['todoList'].set('todo'+todoKey, 
-        TodoStore.ob
-    );
-    let todo = feature['todoList'].get('todo'+todoKey);
-    todo.name = 'Todo ' + todoKey;
-
+    feature['todoLastCount']++;
+    feature['todoList'].set('todo'+todoKey, {
+        name: 'Todo ' + todoKey,
+        completed: false,
+        lastUpdated: CommonStore.getCurrentDateTime(),
+    });
     project['lastUpdated'] = CommonStore.getCurrentDateTime();
     feature['lastUpdate'] = CommonStore.getCurrentDateTime();
 });

@@ -1,7 +1,6 @@
 import React from 'react';   
 import {observer} from 'mobx-react';
 import ProjectStore from '../stores/ProjectStore';
-import FeatureStore from '../stores/FeatureStore';
 import { Col, Input, Form, Row, Icon, Button, Modal, Checkbox } from 'antd';
 import { Link } from 'react-router-dom';
 import TodoList from './TodoList';
@@ -14,7 +13,7 @@ const FeatureList = observer((props) => {
 
     let projectId = props.projectId;
     let project = ProjectStore.ob.dataList.get(projectId);
-    let uuid = project['features'].size;
+    let uuid = project['featureLastCount'];
 
     const addFeature = () => {
         ProjectStore.addFeature(projectId, uuid);
@@ -31,7 +30,6 @@ const FeatureList = observer((props) => {
             }  
         });
         ProjectStore.setFeatureNameInProject(projectId, rowKey, value);
-        console.log(form.getFieldsValue())
     };
     const handleModalOpen = (title) => {
         ProjectStore.ob.modalOb.title = title + ' - Todo List';
@@ -64,7 +62,7 @@ const FeatureList = observer((props) => {
                                                         />
                                                     </div>
                                                     <FormItem>
-                                                        {getFieldDecorator(projectId+'-feature-'+`[${rowKey}]`, {
+                                                        {getFieldDecorator(projectId+'-feature'+`[${projectId+'-'+rowKey}]`, {
                                                             initialValue: data[content],
                                                             rules: [{
                                                               whitespace: true, 
@@ -73,7 +71,7 @@ const FeatureList = observer((props) => {
                                                             <Input 
                                                                 placeholder="Feature name"
                                                                 onChange={(e)=> {
-                                                                    handleFeatureNameChange(rowKey, e.target.value, projectId+'-feature-'+`[${rowKey}]`)
+                                                                    handleFeatureNameChange(rowKey, e.target.value, projectId+'-feature'+`[${projectId+'-'+rowKey}]`)
                                                                 }}
                                                             />
                                                         )}
@@ -140,7 +138,7 @@ const FeatureList = observer((props) => {
                     {
                         (project['name']) ? <div className="title">{project['name']}</div> : ''
                     }
-                    <FeatureItems />
+                    {FeatureItems()}
                     <Col className="ant-col" span={6}>
                         <Button 
                             className="newCard" type="dashed"
